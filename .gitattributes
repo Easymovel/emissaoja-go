@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# O proxy do Go monta o zip do módulo com git archive, que respeita export-ignore. Os *_test.go ficam
+# no zip de propósito: o pkg.go.dev lê de lá os exemplos (example_test.go) que aparecem na documentação.
+/.github         export-ignore
+/.gitattributes  export-ignore
+/.gitignore      export-ignore

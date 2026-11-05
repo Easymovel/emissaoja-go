@@ -1,0 +1,78 @@
+# CI do emissaoja-go: gofmt, go vet e testes com o detector de corrida em Go 1.21, 1.22 e 1.23.
+#
+# Publicação: o Go não tem registro para onde enviar o pacote. A versão nasce da tag no GitHub:
+#
+#   git tag v0.1.0 && git push origin v0.1.0
+#
+# Depois da tag, pedir a versão ao proxy do Go faz o pkg.go.dev indexar a documentação:
+#
+#   GOPROXY=https://proxy.golang.org go list -m emissaoja.com.br/go@v0.1.0
+#
+# O job "indexar" abaixo faz isso sozinho em cada tag v*, depois de conferir que a tag bate com a
+# constante Versao de cliente.go. Pré-requisito: https://emissaoja.com.br/go?go-get=1 precisa servir
+#   <meta name="go-import" content="emissaoja.com.br/go git https://github.com/Easymovel/emissaoja-go">
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    name: Go ${{ matrix.go }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ["1.21.x", "1.22.x", "1.23.x"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: false
+      - name: gofmt
+        run: |
+          fora="$(gofmt -l .)"
+          if [ -n "$fora" ]; then
+            echo "::error::Arquivos fora do gofmt:"
+            echo "$fora"
+            gofmt -d .
+            exit 1
+          fi
+      - name: go vet
+        run: go vet ./...
+      - name: Testes
+        run: go test -race -count=1 ./...
+
+  indexar:
+    name: Indexar a versão no pkg.go.dev
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: false
+      - name: Conferir que a tag bate com a constante Versao
+        run: |
+          versao="$(sed -n 's/^const Versao = "\(.*\)"$/\1/p' cliente.go)"
+          echo "tag ${GITHUB_REF_NAME}, Versao ${versao}"
+          if [ "${GITHUB_REF_NAME}" != "v${versao}" ]; then
+            echo "::error::A tag ${GITHUB_REF_NAME} não bate com a constante Versao (${versao}) de cliente.go"
+            exit 1
+          fi
+      - name: Pedir a versão ao proxy do Go
+        env:
+          GOPROXY: https://proxy.golang.org
+        run: |
+          # Fora do diretório do módulo: dentro dele, o go recusa consultar versão do módulo principal.
+          cd "$RUNNER_TEMP"
+          go list -m "emissaoja.com.br/go@${GITHUB_REF_NAME}"

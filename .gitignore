@@ -1,0 +1,22 @@
+# Binários e saídas de teste
+*.exe
+*.test
+*.out
+coverage.*
+/dist/
+
+# Workspaces locais
+go.work
+go.work.sum
+
+# PDFs gerados pelos exemplos
+nfse*.pdf
+
+# Segredos
+.env
+.env.*
+*.key
+
+# Editores
+.idea/
+.vscode/
