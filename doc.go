@@ -5,7 +5,7 @@
 // A API é a mesma que o app do emissaoja usa: conectar a empresa ao Emissor Nacional, cadastrar
 // tomadores e serviços, emitir com idempotência, acompanhar o pedido, baixar o PDF (DANFSe) e o XML,
 // cancelar e consultar CNPJ. O pacote usa só a biblioteca padrão. Site, cadastro e planos em
-// https://emissaoja.com.br; referência completa da API em https://emissaoja.com.br/docs/.
+// https://emissaoja.com.br/?origem=lib-go&utm_source=go&utm_medium=pacote&utm_campaign=home; referência completa da API em https://emissaoja.com.br/docs/?origem=lib-go&utm_source=go&utm_medium=pacote&utm_campaign=docs.
 //
 // O caminho de import termina em "go", mas o pacote se chama emissaoja. Importe com o nome explícito:
 //
@@ -13,7 +13,7 @@
 //
 // # Chave de API
 //
-// Entre no app com a conta Google (https://emissaoja.com.br/app), aceite os termos e crie a chave em
+// Entre no app com a conta Google (https://emissaoja.com.br/app?origem=lib-go&utm_source=go&utm_medium=pacote&utm_campaign=app), aceite os termos e crie a chave em
 // Conta → API. Ela aparece uma vez e começa com ej_live_. A chave é secreta: use-a só no servidor,
 // nunca em navegador ou em app distribuído. Sem [ComChave], o cliente lê a variável de ambiente
 // EMISSAOJA_KEY na primeira chamada que precisa dela.

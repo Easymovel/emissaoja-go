@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/emissaoja.com.br/go.svg)](https://pkg.go.dev/emissaoja.com.br/go) [![CI](https://github.com/Easymovel/emissaoja-go/actions/workflows/ci.yml/badge.svg)](https://github.com/Easymovel/emissaoja-go/actions/workflows/ci.yml) [![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue)](LICENSE)
 
-Cliente oficial em Go da **[API do emissaoja](https://emissaoja.com.br/docs/)** para emitir **NFS-e (Nota Fiscal de Serviço eletrônica) no Emissor Nacional** (nfse.gov.br) a partir do seu sistema, **sem certificado digital**: o emissaoja entra no portal com o CNPJ e a senha da própria empresa. Feito para **MEI e empresas do Simples Nacional**. Cadastre tomadores pelo CNPJ (nome e endereço vêm da Receita Federal), emita, acompanhe a autorização, baixe o **PDF (DANFSe) e o XML** e cancele notas.
+Cliente oficial em Go da **[API do emissaoja](https://emissaoja.com.br/docs/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=docs)** para emitir **NFS-e (Nota Fiscal de Serviço eletrônica) no Emissor Nacional** (nfse.gov.br) a partir do seu sistema, **sem certificado digital**: o emissaoja entra no portal com o CNPJ e a senha da própria empresa. Feito para **MEI e empresas do Simples Nacional**. Cadastre tomadores pelo CNPJ (nome e endereço vêm da Receita Federal), emita, acompanhe a autorização, baixe o **PDF (DANFSe) e o XML** e cancele notas.
 
 - **Zero dependências:** só a biblioteca padrão, Go 1.21 ou mais novo.
 - **Tipado:** `Pedido`, `Nota`, `Tomador`, `Servico` e `Operacao` com tags JSON; `context.Context` em todas as chamadas; cliente seguro para uso concorrente.
@@ -23,7 +23,7 @@ O caminho de import termina em `go`, mas o pacote se chama `emissaoja`. Importe 
 import emissaoja "emissaoja.com.br/go"
 ```
 
-Crie a conta com o Google em [emissaoja.com.br](https://emissaoja.com.br/?origem=lib-go) e gere a chave em **Conta → API** (ela aparece uma vez; prefixo `ej_live_`). Guarde a chave no servidor:
+Crie a conta com o Google em [emissaoja.com.br](https://emissaoja.com.br/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=home) e gere a chave em **Conta → API** (ela aparece uma vez; prefixo `ej_live_`). Guarde a chave no servidor:
 
 ```bash
 export EMISSAOJA_KEY=ej_live_...
@@ -213,7 +213,7 @@ default:
 | --- | --- | --- |
 | 400 | `validation_error`, `valor_invalido`, `tomador_obrigatorio`, `cnpj_invalido` | Corrigir o campo (`Extras["details"]` diz qual) |
 | 401 | `chave_invalida` | Conferir a chave (ou o ambiente: `ej_test_` só no sandbox) |
-| 402 | `limite_notas` | Limite do plano no mês; planos em [emissaoja.com.br/#precos](https://emissaoja.com.br/#precos) |
+| 402 | `limite_notas` | Limite do plano no mês; planos em [emissaoja.com.br/#precos](https://emissaoja.com.br/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=precos#precos) |
 | 404 | `tomador_nao_encontrado`, `servico_nao_encontrado`, `nota_nao_encontrada`, `pedido_nao_encontrado` | Conferir o id |
 | 409 | `sem_empresa`, `aceite_pendente` | Conectar a empresa; aceitar os termos no app |
 | 409 | `possivel_duplicada`, `emissao_repetida_recente`, `incerta_pendente` | Ver a seção acima; em `incerta_pendente`, não emita de novo e use `Emissoes.Conferir` |
@@ -239,7 +239,7 @@ Limites: 60 chamadas por minuto por chave, 10 emissões por minuto, 120 por minu
 | `c.CNPJ` | `Consultar` (dados cadastrais da Receita Federal) |
 | `c` | `Status` (sem chave), `BaseURL` |
 
-Opções de `NovoCliente`: `ComChave`, `ComBaseURL`, `ComTimeout` (padrão 30 s) e `ComHTTPClient`. Tipos, campos e exemplos: [pkg.go.dev/emissaoja.com.br/go](https://pkg.go.dev/emissaoja.com.br/go). Referência completa da API: [emissaoja.com.br/docs](https://emissaoja.com.br/docs/) e [OpenAPI 3.1](https://emissaoja.com.br/v1/openapi.json).
+Opções de `NovoCliente`: `ComChave`, `ComBaseURL`, `ComTimeout` (padrão 30 s) e `ComHTTPClient`. Tipos, campos e exemplos: [pkg.go.dev/emissaoja.com.br/go](https://pkg.go.dev/emissaoja.com.br/go). Referência completa da API: [emissaoja.com.br/docs](https://emissaoja.com.br/docs/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=docs) e [OpenAPI 3.1](https://emissaoja.com.br/v1/openapi.json).
 
 ## Perguntas frequentes
 
@@ -249,7 +249,7 @@ Opções de `NovoCliente`: `ComChave`, `ComBaseURL`, `ComTimeout` (padrão 30 s)
 
 **Tem ambiente de testes?** Sim, o sandbox em `https://sandbox.emissaoja.com.br` (`emissaoja.BaseSandbox`), com o Emissor Nacional simulado e empresas de exemplo.
 
-**Quanto custa?** O plano Grátis emite 1 nota por mês; os planos pagos estão em [emissaoja.com.br/#precos](https://emissaoja.com.br/#precos). O sandbox é grátis. A nota conta quando o Emissor Nacional aceita; recusada não conta.
+**Quanto custa?** O plano Grátis emite 1 nota por mês; os planos pagos estão em [emissaoja.com.br/#precos](https://emissaoja.com.br/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=precos#precos). O sandbox é grátis. A nota conta quando o Emissor Nacional aceita; recusada não conta.
 
 **Tem webhook?** Ainda não. Acompanhe o pedido com `c.Notas.Aguardar` ou `c.Emissoes.Obter`, que trazem `proxima_consulta_ms`.
 
@@ -258,11 +258,11 @@ Opções de `NovoCliente`: `ComChave`, `ComBaseURL`, `ComTimeout` (padrão 30 s)
 - Node.js/TypeScript: [`npm install emissaoja`](https://github.com/Easymovel/emissaoja-js) · Python: [`pip install emissaoja`](https://github.com/Easymovel/emissaoja-py) · PHP/Laravel: [`composer require emissaoja/emissaoja`](https://github.com/Easymovel/emissaoja-php) · .NET: [`dotnet add package Emissaoja`](https://github.com/Easymovel/emissaoja-dotnet) · Ruby: [`gem install emissaoja`](https://github.com/Easymovel/emissaoja-ruby)
 - n8n: [`n8n-nodes-emissaoja`](https://github.com/Easymovel/n8n-nodes-emissaoja)
 - Assistentes de IA (Claude, ChatGPT, Cursor, VS Code): servidor MCP em `https://emissaoja.com.br/mcp`
-- Documentação: [emissaoja.com.br/docs](https://emissaoja.com.br/docs/) · [docs.md](https://emissaoja.com.br/docs.md) · [OpenAPI](https://emissaoja.com.br/v1/openapi.json) · para IAs: [llms.txt](https://emissaoja.com.br/llms.txt)
+- Documentação: [emissaoja.com.br/docs](https://emissaoja.com.br/docs/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=docs) · [docs.md](https://emissaoja.com.br/docs.md) · [OpenAPI](https://emissaoja.com.br/v1/openapi.json) · para IAs: [llms.txt](https://emissaoja.com.br/llms.txt)
 
 ## In English
 
-Official Go client for the [emissaoja API](https://emissaoja.com.br/docs/): issue Brazilian **NFS-e** (electronic service invoices) through the national **Emissor Nacional** without a digital certificate, for MEI and Simples Nacional companies. Standard library only, typed responses, `context.Context` everywhere, idempotent issuing, PDF and XML download, and a free sandbox with a simulated tax authority (`emissaoja.BaseSandbox`). Install with `go get emissaoja.com.br/go`; the API and the docs are in Portuguese.
+Official Go client for the [emissaoja API](https://emissaoja.com.br/docs/?origem=lib-go&utm_source=go&utm_medium=readme&utm_campaign=docs): issue Brazilian **NFS-e** (electronic service invoices) through the national **Emissor Nacional** without a digital certificate, for MEI and Simples Nacional companies. Standard library only, typed responses, `context.Context` everywhere, idempotent issuing, PDF and XML download, and a free sandbox with a simulated tax authority (`emissaoja.BaseSandbox`). Install with `go get emissaoja.com.br/go`; the API and the docs are in Portuguese.
 
 ---
 
